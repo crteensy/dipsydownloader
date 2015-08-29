@@ -57,6 +57,11 @@ bool configure(int creset_pin, int cdone_pin, int ss_pin, spi_type& spi, config_
     SPI.transfer(0x00);
   }
   digitalWriteFast(ss_pin, 1);
+
+  pinMode(creset_pin, INPUT);
+  pinMode(cdone_pin, INPUT);
+  pinMode(ss_pin, INPUT);
+
   return done;
 }
 }
