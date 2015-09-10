@@ -39,6 +39,8 @@ bool configure(int creset_pin, int cdone_pin, int ss_pin, spi_type& spi, config_
   pinMode(cdone_pin, INPUT_PULLUP);
   pinMode(ss_pin, OUTPUT);
 
+  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE3));
+
   digitalWriteFast(creset_pin, 0);
   digitalWriteFast(ss_pin, 0);
   delay(2);
@@ -52,15 +54,17 @@ bool configure(int creset_pin, int cdone_pin, int ss_pin, spi_type& spi, config_
     SPI.transfer(data);
   }
   bool done = digitalReadFast(cdone_pin);
-  for(uint8_t i = 0; i < (49/2 +1); i++)
+  for(uint8_t i = 0; i < (49/8 + 1); i++)
   {
     SPI.transfer(0x00);
   }
   digitalWriteFast(ss_pin, 1);
 
-  pinMode(creset_pin, INPUT);
+  // pinMode(creset_pin, INPUT); removed: issue #1
   pinMode(cdone_pin, INPUT);
   pinMode(ss_pin, INPUT);
+
+  SPI.endTransaction();
 
   return done;
 }
